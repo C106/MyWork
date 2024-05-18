@@ -138,6 +138,7 @@
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="GPUprogram.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
