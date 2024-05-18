@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="FileName.cpp" />
     <ClCompile Include="GPUprogram.cpp" />
     <ClCompile Include="Shader.cpp" />
