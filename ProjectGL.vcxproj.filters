@@ -18,9 +18,6 @@
     <ClCompile Include="源.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="vertexbuffer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="shader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -457,9 +454,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="vertexbuffer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="shader.h">
       <Filter>头文件</Filter>
     </ClInclude>

@@ -137,7 +137,6 @@
     <ClCompile Include="GPUprogram.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="shader.cpp" />
-    <ClCompile Include="vertexbuffer.cpp" />
     <ClCompile Include="源.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -574,7 +573,6 @@
     <ClInclude Include="Depend\glm\vector_relational.hpp" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="GPUprogram.h" />
-    <ClInclude Include="vertexbuffer.h" />
     <ClInclude Include="shader.h" />
   </ItemGroup>
   <ItemGroup>
