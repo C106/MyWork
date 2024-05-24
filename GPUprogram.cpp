@@ -32,3 +32,6 @@ void program::setFloat(const char* name, float value) {
 void program::setMat4(const char* name, const glm::mat4& trans) {
     glUniformMatrix4fv(glGetUniformLocation(ID, name), 1, GL_FALSE, glm::value_ptr(trans));
 }
+void program::setVec3(const char* name, const glm::vec3& a) {
+    glUniform3fv(glGetUniformLocation(ID, name), 1, glm::value_ptr(a));
+}

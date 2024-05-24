@@ -19,4 +19,5 @@ public:
 	void setInt(const char* name,int value);
 	void setFloat(const char* name, float value);
 	void setMat4(const char* name,const glm::mat4& trans);
+	void setVec3(const char* name, const glm::vec3& a);
 };

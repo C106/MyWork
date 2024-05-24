@@ -281,6 +281,7 @@
     <None Include="Res\Shader\fs.glsl" />
     <None Include="Res\Shader\fs2.glsl" />
     <None Include="Res\Shader\Header.glsl" />
+    <None Include="Res\Shader\vs1.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />

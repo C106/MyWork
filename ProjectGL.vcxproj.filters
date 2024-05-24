@@ -452,6 +452,7 @@
     <None Include="Depend\glm\gtx\wrap.inl">
       <Filter>头文件</Filter>
     </None>
+    <None Include="Res\Shader\vs1.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader.h">
