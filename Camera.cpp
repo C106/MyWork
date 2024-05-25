@@ -24,8 +24,12 @@ Camera::Camera(glm::vec3 location,glm::vec3 front)
     sens = 0.5;
     fov = 45.0f;
 }
-void Camera::setFront(glm::vec3 f) {
-	front = f;
+void Camera::setFront() {
+    glm::vec3 newfront;
+    newfront.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
+    newfront.y = sin(glm::radians(pitch));
+    newfront.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+	front = newfront;
 	right = glm::normalize(glm::cross(up, -front));
 }
 glm::mat4 Camera::Getview() {
@@ -61,11 +65,11 @@ void Camera::Keyboard(GLFWwindow* window) {
     if (glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
     {
 
-        location += glm::normalize(glm::cross(front, -right)) * speed;
+        location += glm::normalize(up) * speed;
     }
     if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
     {
-        location -= glm::normalize(glm::cross(front, -right)) * speed;
+        location -= glm::normalize(up) * speed;
 
     }
     if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
@@ -80,7 +84,7 @@ void Camera::Keyboard(GLFWwindow* window) {
 void Camera::MouseMove(double xmov, double ymov) {
     pitch += ymov * sens;
     yaw += xmov * sens;
-    glm::vec3 newfront;
+    
     if (pitch>89.0)
     {
         pitch = 89.0;
@@ -89,8 +93,6 @@ void Camera::MouseMove(double xmov, double ymov) {
     {
         pitch = -89.0;
     }
-    newfront.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
-    newfront.y = sin(glm::radians(pitch));
-    newfront.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
-    setFront(newfront);
+
+    setFront();
 }

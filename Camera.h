@@ -26,6 +26,6 @@ public:
 	void MouseMove(double xmov,double ymov);
 	glm::mat4 Getview();
 	void setTarget(glm::vec3 target);
-	void setFront(glm::vec3 f);
+	void setFront();
 	Camera(glm::vec3 location, glm::vec3 front);
 };

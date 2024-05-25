@@ -15,7 +15,7 @@ void main ()
 	float specStrength =3;
 	vec4 pps = trs*vec4(Lightpos,1.0);
 	vec3 norm = normalize(normA);
-	vec3 lightDir = normalize(pps.xyz - FragPos);
+	vec3 lightDir = normalize(Lightpos - FragPos);
 	float diff = max(dot(norm, lightDir), 0.0);
 	float ambientStrength = 0.5;
     vec3 ambient = ambientStrength * lightColor;

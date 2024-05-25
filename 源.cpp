@@ -13,6 +13,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Camera.h"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 float lastX = 640, lastY = 480;
 std::ostream& operator<<(std::ostream& os, const glm::vec3& vec) {
     os << "(" << vec.x << ", " << vec.y << ", " << vec.z << ")";
@@ -42,7 +45,7 @@ int main(void)
         std::cout << "glfw initialized" << std::endl;
     }
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Kobe", NULL, NULL);
+    window = glfwCreateWindow(1280, 720, "Kobe", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -55,6 +58,14 @@ int main(void)
     {
         std::cout << "Error" << std::endl;
     }
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    // Setup Platform/Renderer bindings
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init();
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
     float vertices[] = {
     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.0f,0.0f,-1.0f,
      0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,0.0f,-1.0f,
@@ -187,8 +198,8 @@ int main(void)
     glm::mat4 view;
     view = glm::translate(view, glm::vec3(0.0, 0.0, -3.0));
     glm::mat4 projection;
-    float screenWidth = 640;
-    float screenHeight = 480;
+    float screenWidth = 1280;
+    float screenHeight = 720;
     
     glm::vec3 cubePositions[] = {
         glm::vec3(0.0f,  0.0f,  0.0f),
@@ -235,7 +246,31 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+        // feed inputs to dear imgui, start new frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+
+        // render your GUI
+        ImGui::Begin("Camera");
+        ImGui::SliderFloat("yaw", &camera1.yaw, -180, 180);
+        camera1.setFront();
+        ImGui::SliderFloat("pitch", &camera1.pitch, -90, 90);
+        camera1.setFront();
+        ImGui::End();
+
+
+        ImGui::Begin("lightPos");
+        ImGui::SliderFloat("x", &lightpos.x, -50, 50);
+        ImGui::SliderFloat("y", &lightpos.y, -50, 50);
+        ImGui::SliderFloat("z", &lightpos.z, -50, 50);
+        ImGui::End();
+
+        ImGui::Begin("lightColor");
+        ImGui::ColorEdit3("lightColor", &lightcolor.x);
+        ImGui::End();
+
         glBindVertexArray(VAO);
         shader1.use();
         shader1.setInt("tex", 0);
@@ -263,15 +298,20 @@ int main(void)
         shader2.setMat4("view", camera1.Getview());
         shader2.setMat4("projection", projection);
         shader2.setVec3("lightColor", lightcolor);
+        model2 = glm::translate(glm::mat4(1.0), lightpos);
         glBindVertexArray(vao1);
         glDrawArrays(GL_TRIANGLES, 0, 36);
+        // Render dear imgui into screen
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
         /* Poll for and process events */
         glfwPollEvents();
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        glfwSetCursorPosCallback(window,mouse_callback);
+        //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        //glfwSetCursorPosCallback(window,mouse_callback);
+
     }
 
     glfwTerminate();

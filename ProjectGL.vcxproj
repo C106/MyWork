@@ -136,6 +136,13 @@
     <ClCompile Include="Depend\glm\detail\glm.cpp" />
     <ClCompile Include="GPUprogram.cpp" />
     <ClCompile Include="image.cpp" />
+    <ClCompile Include="imgui.cpp" />
+    <ClCompile Include="imgui_demo.cpp" />
+    <ClCompile Include="imgui_draw.cpp" />
+    <ClCompile Include="imgui_impl_glfw.cpp" />
+    <ClCompile Include="imgui_impl_opengl3.cpp" />
+    <ClCompile Include="imgui_tables.cpp" />
+    <ClCompile Include="imgui_widgets.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="源.cpp" />
   </ItemGroup>
@@ -281,7 +288,6 @@
     <None Include="Res\Shader\fs.glsl" />
     <None Include="Res\Shader\fs2.glsl" />
     <None Include="Res\Shader\Header.glsl" />
-    <None Include="Res\Shader\vs1.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -572,6 +578,14 @@
     <ClInclude Include="Depend\glm\vec3.hpp" />
     <ClInclude Include="Depend\glm\vec4.hpp" />
     <ClInclude Include="Depend\glm\vector_relational.hpp" />
+    <ClInclude Include="imconfig.h" />
+    <ClInclude Include="imgui.h" />
+    <ClInclude Include="imgui_impl_glfw.h" />
+    <ClInclude Include="imgui_impl_opengl3.h" />
+    <ClInclude Include="imgui_internal.h" />
+    <ClInclude Include="imstb_rectpack.h" />
+    <ClInclude Include="imstb_textedit.h" />
+    <ClInclude Include="imstb_truetype.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="GPUprogram.h" />
     <ClInclude Include="shader.h" />
