@@ -258,6 +258,9 @@ int main(void)
         camera1.setFront();
         ImGui::SliderFloat("pitch", &camera1.pitch, -90, 90);
         camera1.setFront();
+        ImGui::SliderFloat("roll", &camera1.roll, -180, 180);
+        camera1.changeRoll(camera1.roll);
+        ImGui::SliderFloat("fov", &camera1.fov, 42, 48);
         ImGui::End();
 
 

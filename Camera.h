@@ -21,7 +21,7 @@ public:
 	glm::mat4 view;
 	float pitch, yaw, roll,sens;
 	float fov;
-
+	void changeRoll(float rollA);
 	void Keyboard(GLFWwindow* window);
 	void MouseMove(double xmov,double ymov);
 	glm::mat4 Getview();

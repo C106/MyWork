@@ -96,3 +96,7 @@ void Camera::MouseMove(double xmov, double ymov) {
 
     setFront();
 }
+void Camera::changeRoll(float rollA) {
+    up.y = cos(glm::radians(rollA));
+    up.x = sin(glm::radians(rollA));
+}
