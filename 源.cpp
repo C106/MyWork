@@ -175,7 +175,7 @@ int main(void)
         std::cout << "Failed to load texture" << std::endl;
     }
     stbi_image_free(data);
-    unsigned char* data2 = stbi_load(".\\Res\\Glass.png", &width, &height, &nrChannels, 0);
+    unsigned char* data2 = stbi_load(".\\Res\\KObe_light.jpg", &width, &height, &nrChannels, 0);
 
     unsigned int texture2;
     glActiveTexture(GL_TEXTURE1);
@@ -185,12 +185,9 @@ int main(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data2);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
     glGenerateMipmap(GL_TEXTURE_2D);
 
-    shader1.use();
-    shader1.setInt("tex", 0);
-    shader1.setInt("tex2", 1);
     float mix = 0,x=0;
     //进入3D
     glm::mat4 model;
@@ -237,7 +234,6 @@ int main(void)
     glm::mat4 model2;
     model2 = glm::translate(model2, lightpos);
 
-    //法向量
 
 
     /* Loop until the user closes the window */
@@ -276,17 +272,22 @@ int main(void)
 
         glBindVertexArray(VAO);
         shader1.use();
-        shader1.setInt("tex", 0);
-        shader1.setInt("tex2", 1);
+        shader1.setInt("material.diffuse", 0);
+        shader1.setInt("material.specular", 1);
         camera1.Keyboard(window);
         shader1.setMat4("model", model);
         shader1.setMat4("view", camera1.Getview());
         projection = glm::perspective(camera1.fov, screenWidth / screenHeight, 0.1f, 100.0f);
         shader1.setMat4("projection", projection);
-        shader1.setVec3("lightColor", lightcolor);
+
+        shader1.setVec3("light.specular", lightcolor);
+        shader1.setVec3("light.diffuse", lightcolor * (float)0.8);
+        shader1.setVec3("light.ambient", lightcolor * (float)0.1);
+
+
         shader1.setVec3("viewPos", camera1.location);
         shader1.setMat4("trs", model2);
-        shader1.setVec3("Lightpos", lightpos);
+        shader1.setVec3("light.position", lightpos);
         for (int i = 0; i < 10; i++)
         {
             glm::mat4 model;
