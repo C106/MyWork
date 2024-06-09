@@ -9,8 +9,11 @@ uniform vec3 viewPos;
 //uniform mat4 rot;
 uniform mat4 trs;
 struct Material {
-    sampler2D diffuse;
-    sampler2D specular;
+    sampler2D texture_diffuse1;
+    sampler2D texture_diffuse2;
+    sampler2D texture_diffuse3;
+    sampler2D texture_specular1;
+    sampler2D texture_specular2;
     float shininess;
 };
 struct Light {
@@ -35,9 +38,9 @@ void main ()
 
 
     
-    vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, outcoord));
-	vec3 specular = light.specular * spec * vec3(texture(material.specular, outcoord));
-    vec3 ambient = light.ambient * vec3(texture(material.diffuse, outcoord));
+    vec3 diffuse = light.diffuse * diff * vec3(texture(material.texture_diffuse1, outcoord));
+	vec3 specular = light.specular * spec * vec3(texture(material.texture_specular1, outcoord));
+    vec3 ambient = light.ambient * vec3(texture(material.texture_diffuse1, outcoord));
     vec3 result = specular+diffuse+ambient;
    color = vec4(result,1.0);
    //;

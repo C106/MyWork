@@ -81,7 +81,7 @@ void Camera::Keyboard(GLFWwindow* window) {
 
     }
 }
-void Camera::MouseMove(double xmov, double ymov) {
+    void Camera::MouseMove(double xmov, double ymov) {
     pitch += ymov * sens;
     yaw += xmov * sens;
     

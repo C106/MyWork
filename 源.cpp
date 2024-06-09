@@ -1,6 +1,8 @@
 #include<GL/glew.h>
 #include <GLFW\glfw3.h>
 #include<iostream>
+#include<string>
+#include<vector>
 #include<fstream>
 #include<sstream>
 #include<string>
@@ -16,6 +18,15 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include "Model.h"
+#define STBI_WINDOWS_UTF8
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
 float lastX = 640, lastY = 480;
 std::ostream& operator<<(std::ostream& os, const glm::vec3& vec) {
     os << "(" << vec.x << ", " << vec.y << ", " << vec.z << ")";
@@ -33,6 +44,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     lastY = ypos;
     camera1.MouseMove(xoffset, yoffset);
 }
+
 int main(void)
 {
     GLFWwindow* window;
@@ -53,7 +65,7 @@ int main(void)
     }
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
-    
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     if (glewInit()!=GLEW_OK)
     {
         std::cout << "Error" << std::endl;
@@ -109,35 +121,15 @@ int main(void)
     -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 0.0f,1.0f,0.0f,
     -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,1.0f,0.0f
     };
-    //创建顶点数组
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+
     //创建顶点缓冲
     unsigned int Vbo;
     glGenBuffers(1, &Vbo);
     glBindBuffer(GL_ARRAY_BUFFER, Vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-    //顶点属性
-    
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0);
     glEnableVertexAttribArray(0);
-    //顶点属性——纹理
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    //顶点属性——法向量
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-    //创建元素缓冲
-
-    unsigned int elements[8] = {
-        3,2,0,
-        2,1,0
-    };
-    unsigned int index_buffer;
-    glGenBuffers(1,&index_buffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6*sizeof(unsigned int), elements,GL_DYNAMIC_DRAW);
 
     //着色器
     shader vertex(".\\Res\\Shader\\Header.glsl",GL_VERTEX_SHADER);
@@ -151,65 +143,18 @@ int main(void)
 
 
     
-    //纹理
-    glActiveTexture(GL_TEXTURE0);
-    int width, height, nrChannels;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char* data = stbi_load(".\\Res\\kobe.png", &width, &height, &nrChannels, 0);
-    unsigned int texture;
-    glGenTextures(1,&texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
-    unsigned char* data2 = stbi_load(".\\Res\\KObe_light.jpg", &width, &height, &nrChannels, 0);
-
-    unsigned int texture2;
-    glActiveTexture(GL_TEXTURE1);
-    glGenTextures(1, &texture2);
-    glBindTexture(GL_TEXTURE_2D, texture2);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
-    glGenerateMipmap(GL_TEXTURE_2D);
 
     float mix = 0,x=0;
     //进入3D
     glm::mat4 model;
-    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0,1.0, 0.0));
+    //model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0,1.0, 0.0));
     glm::mat4 view;
     view = glm::translate(view, glm::vec3(0.0, 0.0, -3.0));
     glm::mat4 projection;
     float screenWidth = 1280;
     float screenHeight = 720;
     
-    glm::vec3 cubePositions[] = {
-        glm::vec3(0.0f,  0.0f,  0.0f),
-        glm::vec3(2.0f,  5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f),
-        glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3(2.4f, -0.4f, -3.5f),
-        glm::vec3(-1.7f,  3.0f, -7.5f),
-        glm::vec3(1.3f, -2.0f, -2.5f),
-        glm::vec3(1.5f,  2.0f, -2.5f),
-        glm::vec3(1.5f,  0.2f, -1.5f),
-        glm::vec3(-1.3f,  1.0f, -1.5f)
-    };
+
     shader1.use();
     glEnable(GL_DEPTH_TEST);
     //摄像机
@@ -233,9 +178,9 @@ int main(void)
     glm::vec3 lightpos(2.2f, 2.0f, 3.0f);
     glm::mat4 model2;
     model2 = glm::translate(model2, lightpos);
+    Model newmodel("C:\\Users\\18063\\Documents\\model\\2.pmx");
 
-
-
+    bool controlMode=0;
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -270,10 +215,13 @@ int main(void)
         ImGui::ColorEdit3("lightColor", &lightcolor.x);
         ImGui::End();
 
-        glBindVertexArray(VAO);
+        ImGui::Begin("Control Mode");
+        ImGui::IsKeyDown(ImGuiKey_0);
+        ImGui::Checkbox("Mode", &controlMode);
+        ImGui::End();
+
         shader1.use();
-        shader1.setInt("material.diffuse", 0);
-        shader1.setInt("material.specular", 1);
+
         camera1.Keyboard(window);
         shader1.setMat4("model", model);
         shader1.setMat4("view", camera1.Getview());
@@ -288,16 +236,10 @@ int main(void)
         shader1.setVec3("viewPos", camera1.location);
         shader1.setMat4("trs", model2);
         shader1.setVec3("light.position", lightpos);
-        for (int i = 0; i < 10; i++)
-        {
-            glm::mat4 model;
-            float angle = 20.f * i;
-            model = glm::translate(model, cubePositions[i]);
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(0.3f, 0.1f, 0.0f));
-            shader1.setMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 360);
-        }
+
+        newmodel.Draw(shader1);
         shader2.use();
+        
         shader2.setMat4("model", model2);
         shader2.setMat4("view", camera1.Getview());
         shader2.setMat4("projection", projection);
@@ -313,8 +255,15 @@ int main(void)
 
         /* Poll for and process events */
         glfwPollEvents();
-        //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        //glfwSetCursorPosCallback(window,mouse_callback);
+        
+        if (controlMode == 1) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            glfwSetCursorPosCallback(window, mouse_callback);
+        }
+        else
+        {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        }
 
     }
 
