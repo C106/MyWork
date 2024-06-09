@@ -1,2 +1,3 @@
 My OpenGL learning project
-ĞèÒªÏÂÔØassimp¿â
+
+Need assimp sdk
